@@ -1,0 +1,39 @@
+<%- include('partials/header'); -%>
+
+<div id="email-message">Confirming email...</div>
+
+<%- include('partials/footer'); -%>
+
+<script>
+  function confirmEmail() {
+    const emailMessage = document.querySelector("#email-message");
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const token = urlParams.get("token");
+
+    if (!token) {
+      return (emailMessage.textContent =
+        "Something went wrong. Contact our support");
+    }
+
+    const user = fetch("/email-confirmation", {
+      method: "POST",
+      body: JSON.stringify({ token }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!user) {
+      return (emailMessage.textContent =
+        "Something went wrong. Contact our support");
+    }
+    emailMessage.textContent = "Email confirmed! You'll be redirected...";
+
+    setTimeout(() => {
+      location.assign("/");
+    }, [2000]);
+  }
+  setTimeout(() => {
+    confirmEmail();
+  }, [2000]);
+</script>
